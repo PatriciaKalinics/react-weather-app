@@ -1,8 +1,8 @@
 import axios from "axios";
 import React, { useState } from "react";
 
-export default function Search({ displayOverview, displayWeather }) {
-  let [query, setQuery] = useState("Glasgow");
+export default function Search({ displayWeather }) {
+  let [query, setQuery] = useState();
 
   function handleWeather(response) {
     function formatDate(timestamp) {
@@ -29,22 +29,18 @@ export default function Search({ displayOverview, displayWeather }) {
       return `${day} ${hours}:${minutes}`;
     }
 
-    let overview = {
-      city: response.data.name,
-      description: response.data.weather[0].description,
-      date: formatDate(response.data.dt * 1000),
-    };
-
     let weather = {
-      temperature: Math.round(response.data.main.temp),
+      city: response.data.name,
+      date: formatDate(response.data.dt * 1000),
+      description: response.data.weather[0].description,
       humidity: response.data.main.humidity,
-      wind: response.data.wind.speed,
       icon: `http://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
+      temperature: Math.round(response.data.main.temp),
+      wind: response.data.wind.speed,
     };
 
     console.log(response);
 
-    displayOverview(overview);
     displayWeather(weather);
   }
 
