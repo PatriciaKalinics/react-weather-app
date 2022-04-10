@@ -1,8 +1,11 @@
 import axios from "axios";
 import React, { useState } from "react";
+import Weather from "./Weather";
+import Forecast from "./Forecast";
 
-export default function Search({ displayWeather }) {
-  let [query, setQuery] = useState();
+export default function Search(props) {
+  let [query, setQuery] = useState(props.defaultQuery);
+  let [weather, setWeather] = useState({ ready: false });
 
   function handleWeather(response) {
     function formatDate(timestamp) {
@@ -29,7 +32,8 @@ export default function Search({ displayWeather }) {
       return `${day} ${hours}:${minutes}`;
     }
 
-    let weather = {
+    setWeather({
+      ready: true,
       city: response.data.name,
       date: formatDate(response.data.dt * 1000),
       description: response.data.weather[0].description,
@@ -37,44 +41,55 @@ export default function Search({ displayWeather }) {
       icon: `http://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
       temperature: Math.round(response.data.main.temp),
       wind: response.data.wind.speed,
-    };
+    });
 
     console.log(response);
-
-    displayWeather(weather);
   }
 
   function handleQuery(event) {
     event.preventDefault();
-    let url = `https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=10d1d5b699dafcc3bae98dd9eeecb91a&units=metric`;
-    axios.get(url).then(handleWeather);
+    search();
   }
 
   function updateQuery(event) {
     setQuery(event.target.value);
   }
 
-  return (
-    <form className="search" onSubmit={handleQuery}>
-      <div className="row">
-        <div className="col-9">
-          <input
-            type="search"
-            placeholder="Type a city..."
-            className="form-control"
-            id="city-input"
-            autoComplete="off"
-            onChange={updateQuery}
-          />
-        </div>
-        <div className="col-3">
-          <input
-            type="submit"
-            value="Search 🔍"
-            className="btn btn-danger w-100"
-          />
-        </div>
+  function search() {
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=10d1d5b699dafcc3bae98dd9eeecb91a&units=metric`;
+    axios.get(url).then(handleWeather);
+  }
+
+  if (weather.ready) {
+    return (
+      <div className="Search">
+        <form onSubmit={handleQuery}>
+          <div className="row">
+            <div className="col-9">
+              <input
+                type="search"
+                placeholder="Type a city..."
+                className="form-control"
+                id="city-input"
+                autoComplete="off"
+                onChange={updateQuery}
+              />
+            </div>
+            <div className="col-3">
+              <input
+                type="submit"
+                value="Search 🔍"
+                className="btn btn-danger w-100"
+              />
+            </div>
+          </div>
+        </form>
+        <Weather data={weather} />
+        <Forecast />
       </div>
-    </form>
-  );
+    );
+  } else {
+    search();
+    return "Loading...";
+  }
 }
