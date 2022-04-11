@@ -15,7 +15,7 @@ export default function Search(props) {
       description: response.data.weather[0].description,
       humidity: response.data.main.humidity,
       icon: `http://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
-      temperature: Math.round(response.data.main.temp),
+      temperature: response.data.main.temp,
       wind: response.data.wind.speed,
     });
 
@@ -46,7 +46,6 @@ export default function Search(props) {
                 type="search"
                 placeholder="Type a city..."
                 className="form-control"
-                id="city-input"
                 autoComplete="off"
                 onChange={updateQuery}
               />

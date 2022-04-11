@@ -1,16 +1,17 @@
 import React from "react";
 import Date from "./Date";
+import WeatherTemperature from "./WeatherTemperature";
 
 export default function Weather(props) {
   return (
     <div className="Weather">
       <div className="overview">
-        <h1 id="city">{props.data.city}</h1>
+        <h1>{props.data.city}</h1>
         <ul>
           <li>
             <Date date={props.data.date} />
           </li>
-          <li id="description">{props.data.description}</li>
+          <li>{props.data.description}</li>
         </ul>
       </div>
       <div className="row">
@@ -20,20 +21,14 @@ export default function Weather(props) {
               src={props.data.icon}
               alt={props.data.description}
               className="float-left"
-              id="icon"
             />
-            <strong id="temperature">{props.data.temperature}</strong>
-            <span className="units">°C</span>
+            <WeatherTemperature celsius={props.data.temperature} />
           </div>
         </div>
         <div className="col-6">
           <ul>
-            <li>
-              Humidity: <span id="humidity">{props.data.humidity}</span>%
-            </li>
-            <li>
-              Wind: <span id="windspeed">{props.data.wind}</span> m/H
-            </li>
+            <li>Humidity: {props.data.humidity}%</li>
+            <li>Wind: {props.data.wind} m/H</li>
           </ul>
         </div>
       </div>
